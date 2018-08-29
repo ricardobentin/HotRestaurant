@@ -13,7 +13,7 @@ var PORT = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Reservations (DATA)
+// Reservations and waitlist (DATA)
 // =============================================================
 let reservations = [
   {
@@ -27,8 +27,10 @@ let reservations = [
     phone: "5555555555",
     email: "jb@gmail.com",
     uniqueID: "def567"
-  },
+  }
 ];
+
+let waitList = [];
 
 // Routes
 // =============================================================
@@ -53,18 +55,31 @@ app.get("/api/tables", function(req, res) {
   }
 });
 
+// get all ppl on waitlist - provides JSON
+app.get("/api/waitlist", function(req, res) {
+  console.log(waitList.length);
+  if (waitList.length === 0) {
+    res.send("No waitlist. Book your table now!");
+  } else {
+    for (var i = 0; i < waitList.length; i++) {
+      res.json(waitList);
+    }
+  }
+});
+
 // Create New reservation - takes in JSON input
 app.post("/api/tables", function(req, res) {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body-parser middleware
   var newReservation = req.body;
-//   newReservation.routeName = newReservation.name.replace(/\s+/g, "").toLowerCase();
-
   console.log(newReservation);
-
   reservations.push(newReservation);
-
   res.json(newReservation);
+});
+
+app.post("/api/clear", function(req, res) {
+  reservations = [];
+  res.json(reservations);
 });
 
 // Starts the server to begin listening
