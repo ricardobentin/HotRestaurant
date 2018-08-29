@@ -30,7 +30,7 @@ let reservations = [
   }
 ];
 
-let waitList = [];
+let waitList = [{}];
 
 // Routes
 // =============================================================
@@ -70,11 +70,17 @@ app.get("/api/waitlist", function(req, res) {
 // Create New reservation - takes in JSON input
 app.post("/api/tables", function(req, res) {
   // req.body hosts is equal to the JSON post sent from the user
-  // This works because of our body-parser middleware
-  var newReservation = req.body;
-  console.log(newReservation);
-  reservations.push(newReservation);
-  res.json(newReservation);
+  if (reservations.length < 5) {
+    var newReservation = req.body;
+    console.log(newReservation);
+    reservations.push(newReservation);
+    res.json(newReservation);
+  } else {
+    var newWaitList = req.body;
+    console.log(newWaitList);
+    waitList.push(newWaitList);
+    res.json(newWaitList);
+  }
 });
 
 app.post("/api/clear", function(req, res) {
